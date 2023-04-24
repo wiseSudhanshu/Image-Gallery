@@ -78,4 +78,25 @@ class DB{
             return false;
         }
     }
+
+    /*
+     * Delete data from the database
+     * @param string name of the table
+     * @param array where condition on deleting data
+     */
+    public function delete($table, $conditions){
+        $whereSql = '';
+        if(!empty($conditions)&& is_array($conditions)){
+            $whereSql .= ' WHERE ';
+            $i = 0;
+            foreach($conditions as $key => $value){
+                $pre = ($i > 0)?' AND ':'';
+                $whereSql .= $pre.$key." = '".$value."'";
+                $i++;
+            }
+        }
+        $query = "DELETE FROM ".$table.$whereSql;
+        $delete = $this->db->query($query);
+        return $delete?true:false;
+    }
 }
