@@ -106,11 +106,11 @@
             'id' => $id
         ];
 
-        $result = $db->delete('images', $data);
+        $result = $db->delete('pictures', $data);
 
         if($result) {
             $_SESSION['success'] = 'Data Deleted Permanently!';
-            unlink('uploads/images/'.$image);
+            unlink('uploads/'.$image);
         } else {
             $_SESSION['error'] = 'An Error occured while deleting your data! Please try again.';
         }

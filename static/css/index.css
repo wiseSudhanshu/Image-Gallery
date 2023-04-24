@@ -41,7 +41,7 @@
 }
   
 .sr-image-container:hover .sr-options {
-    display: block;
+    display: flex;
 }
 
 .sr-option {
@@ -82,6 +82,10 @@
 .sr-option:last-child {
     margin-bottom: 0;
 } 
+  
+.delete-form {
+    display: inline-block;
+}
 
 @media screen and (max-width: 560px) {
     .sr-gallery {
