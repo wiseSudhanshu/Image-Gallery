@@ -8,6 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Roboto&family=Sriracha&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <link rel="stylesheet" href="./static/css/lightbox.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <script src="./static/JS/lightbox-plus-jquery.js"></script>
     <title>Image Gallery</title>
 </head>
 <body>
@@ -45,6 +48,45 @@
             unset($_SESSION['success']);
         }
     ?>
+
+    <div class="sr-container">
+        <div class="sr-gallery">
+            <?php
+                require_once 'DB.class.php';
+                $db = new DB();
+                
+                $sql = 'SELECT * FROM images';
+    
+                $result = $db->db->query($sql);
+                
+                if($result->num_rows > 0) {
+                    foreach($result as $row) {
+                        ?>
+                        <div class="sr-image-container">
+                            <a href="<?php echo "uploads/images/".$row['file_name']; ?>" data-lightbox="models" data-title="<?php echo $row['title']; ?>">
+                                <img src="<?php echo "uploads/images/".$row['file_name']; ?>" width="100px" alt="image" class="sr-image">
+                            </a>
+                            <div class="sr-options">
+                                <a href="edit.php?id=<?php echo $row['id']; ?>">
+                                    <img src="./static/images/pencil.png" alt="edit" class="sr-option edit">
+                                </a>
+                                <a href="#">
+                                    <img src="./static/images/trash.png" alt="delete" class="sr-option delete">
+                                </a>
+                            </div>
+                        </div>
+                        <?php
+                    }
+                } 
+                else {
+                ?>
+                    <h1 style="color: gray;"><?php echo 'No records found!'; ?></h1>
+                <?php
+                die();
+                }
+            ?>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>
