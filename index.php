@@ -70,9 +70,13 @@
                                 <a href="edit.php?id=<?php echo $row['id']; ?>">
                                     <img src="./static/images/pencil.png" alt="edit" class="sr-option edit">
                                 </a>
-                                <a href="#">
-                                    <img src="./static/images/trash.png" alt="delete" class="sr-option delete">
-                                </a>
+                                <form id="delete-form" action="postAction.php" method="POST">
+                                    <input type="hidden" name="del_id" value="<?php echo $row['id']; ?>">
+                                    <input type="hidden" name="del_image" value="<?php echo $row['file_name']; ?>">
+                                    <button type="submit" name="delete_image" class="delete-button">
+                                        <img src="./static/images/trash.png" alt="delete" class="delete">
+                                    </button>
+                                </form>
                             </div>
                         </div>
                         <?php
