@@ -63,8 +63,8 @@
                     foreach($result as $row) {
                         ?>
                         <div class="sr-image-container">
-                            <a href="<?php echo "uploads/images/".$row['file_name']; ?>" data-lightbox="models" data-title="<?php echo $row['title']; ?>">
-                                <img src="<?php echo "uploads/images/".$row['file_name']; ?>" width="100px" alt="image" class="sr-image">
+                            <a href="<?php echo "uploads/".$row['file_name']; ?>" data-lightbox="models" data-title="<?php echo $row['title']; ?>">
+                                <img src="<?php echo "uploads/".$row['file_name']; ?>" width="100px" alt="image" class="sr-image">
                             </a>
                             <div class="sr-options">
                                 <a href="edit.php?id=<?php echo $row['id']; ?>">
