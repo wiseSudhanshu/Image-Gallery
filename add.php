@@ -11,7 +11,7 @@
       <title>Add Image</title>
   </head>
   <body>
-    <!-- <h1>Add Image</h1> -->
+    <h1 class="heading">Add Image</h1>
 
     <form action="postAction.php" method="post" enctype="multipart/form-data">
       <div class="form-group">

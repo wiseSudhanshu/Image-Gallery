@@ -55,7 +55,7 @@
                 require_once 'DB.class.php';
                 $db = new DB();
                 
-                $sql = 'SELECT * FROM images';
+                $sql = 'SELECT * FROM pictures';
     
                 $result = $db->db->query($sql);
                 

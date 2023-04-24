@@ -6,10 +6,16 @@
     font-family: 'Sriracha', cursive;
 }
 
+.heading {
+    margin-top: 2.5em;
+    text-align: center;
+    color: #007bff;
+}
+
 form {
     width: 40%;
     margin: 0 auto;
-    padding: 8em 0;
+    padding: 3em 0;
 }
 
 .form-group {

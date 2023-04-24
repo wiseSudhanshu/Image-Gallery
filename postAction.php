@@ -36,7 +36,7 @@
                 die();
             }
              
-            $result = $db->insert('images', $data);
+            $result = $db->insert('pictures', $data);
 
             if($result) {
                 $_SESSION['success'] = 'Image Uploaded Successfully!';
