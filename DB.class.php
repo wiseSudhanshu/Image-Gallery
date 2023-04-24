@@ -52,4 +52,30 @@ class DB{
             return false;
         }
     }
+
+    /*
+     * Update data into the database
+     * @param string name of the table
+     * @param array the data for updating into the table
+     * @param array where condition on updating data
+     */
+    public function update($table, $data){
+        if(!empty($data) && is_array($data)){
+            $colvalSet = '';
+            $i = 0;
+            if(!array_key_exists('modified_at',$data)){
+                $data['modified_at'] = date("Y-m-d H:i:s");
+            }
+            foreach($data as $key=>$val){
+                $pre = ($i > 0)?', ':'';
+                $colvalSet .= $pre.$key."='".$this->db->real_escape_string($val)."'";
+                $i++;
+            }
+            $query = "UPDATE ".$table." SET ".$colvalSet." WHERE id=".$data['id']."";
+            $update = $this->db->query($query);
+            return $update?$this->db->affected_rows:false;
+        }else{
+            return false;
+        }
+    }
 }
