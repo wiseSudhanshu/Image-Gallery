@@ -20,14 +20,14 @@
 
         $file_ext_valid = ['png', 'jpg', 'jpeg'];
         
-        if(file_exists("uploads/images/" . $file_name)) {
+        if(file_exists("uploads/" . $file_name)) {
             $_SESSION['error'] = $file_name . " already exists!";
             header('Location: add.php');
             die();
         } 
         else {
             if(in_array($file_type, $file_ext_valid)) {
-                $target_file_path = 'uploads/images/' . $file_name;
+                $target_file_path = 'uploads/' . $file_name;
                 move_uploaded_file($tmp_dir, $target_file_path);
             }
             else {
