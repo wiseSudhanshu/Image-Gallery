@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -21,6 +23,16 @@
         <label for="filename">Image:</label>
         <input type="file" id="filename" required name="filename" class="form-control-file">
       </div>
+
+      <?php
+
+        if($_SESSION != '' && isset($_SESSION['error'])) {
+            ?>
+            <p class="error"><?php echo $_SESSION['error']; ?></p>
+            <?php
+            unset($_SESSION['error']);
+          }
+      ?>
 
       <input type="submit" value="Upload" name="submit" class="btn btn-primary">
     </form>
