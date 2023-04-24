@@ -96,5 +96,24 @@
         }
     }
 
+    if(isset($_POST['delete_image'])) {
+        $id = $_POST['del_id'];
+        $image = $_POST['del_image'];
 
+        echo $id;
+
+        $data = [
+            'id' => $id
+        ];
+
+        $result = $db->delete('images', $data);
+
+        if($result) {
+            $_SESSION['success'] = 'Data Deleted Permanently!';
+            unlink('uploads/images/'.$image);
+        } else {
+            $_SESSION['error'] = 'An Error occured while deleting your data! Please try again.';
+        }
+        header('Location: index.php');
+    }
 ?>
