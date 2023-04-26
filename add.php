@@ -34,7 +34,10 @@
           }
       ?>
 
-      <input type="submit" value="Upload" name="submit" class="btn btn-primary">
+      <div class="form-buttons">
+        <input type="submit" value="Upload" name="submit" class="btn btn-primary">
+        <a href="index.php" class="back">Back</a>
+      </div>
     </form>
   </body>
 </html>

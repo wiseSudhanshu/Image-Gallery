@@ -69,6 +69,11 @@ label {
     box-shadow: none;
 }
 
+.form-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
 .btn-primary {
     font-size: 20px;
     margin-top: 10px;
@@ -88,6 +93,30 @@ label {
     border-color: #0062cc;
 }
 
+.error {
+    color: red;
+}
+
+.back {
+    font-size: 20px;
+    margin-top: 10px;
+    width: 6em;
+    padding: 7px 6px;
+    border-radius: 5px;
+    text-decoration: none;
+    text-align: center;
+    outline: none;
+    color: #fff;
+    background-color: grey;
+    border-color: grey;
+    cursor: pointer;
+}
+
+.back:hover {
+    background-color: rgb(97, 97, 97);
+    border-color: rgb(97, 97, 97);
+}
+
 @media screen and (max-width: 549px) {
     .form-control, .form-control-file {
         font-size: 0.875rem;
@@ -96,8 +125,4 @@ label {
     .btn-primary {
         width: 5em;
     }
-}
-
-.error {
-    color: red;
 }

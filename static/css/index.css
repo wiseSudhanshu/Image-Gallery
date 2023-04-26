@@ -5,6 +5,101 @@
     font-family: 'poppins', sans-serif;
 }
 
+body {
+    background-color: whitesmoke;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5em 8%;
+    background-color: whitesmoke;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.buttons {
+    display: flex;
+}
+
+.navbar-brand {
+    color: black;
+    font-size: 50px;
+    letter-spacing: 1rem;
+    line-height: 20px;
+    text-decoration: none;
+    font-family: 'Fleur De Leah', cursive;
+}
+
+.button-with-image {
+    margin: 0 0.4rem;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #26a641;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.button-with-image:hover {
+    background-color: #006d32;
+}
+
+.logout {
+    background-color: #f44336;
+}
+
+.logout:hover {
+    background-color: #d83f34;
+}
+  
+.button-with-image a img {
+    filter: invert(1);
+    width: 25px;
+    height: 25px;
+}
+
+.button-with-image:hover>.toolTipText {
+    opacity: 1;
+}
+
+.toolTipText {
+    position: absolute;
+    bottom: -41px;
+    font-family: 'Sriracha', cursive;
+    border-radius: 7px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 5px 7px;
+    background-color: #26a641;
+    color: #fff;
+    white-space: nowrap;
+    opacity: 0;
+    transition: all 0.4s ease-in;
+}
+
+.two {
+    background-color: #f44336;
+}
+
+.toolTipText::after {
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border: 7px solid;
+    border-color: transparent transparent #26a641 transparent ;
+}
+
+.two::after {
+    border-color: transparent transparent #f44336 transparent ;
+}
+
 .sr-container {
     width: 100%;
     min-height: 100vh;
@@ -90,5 +185,8 @@
 @media screen and (max-width: 560px) {
     .sr-gallery {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+    .navbar-brand {
+        letter-spacing: 0.3rem;
     }
 }

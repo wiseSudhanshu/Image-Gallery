@@ -5,10 +5,20 @@
     require_once 'DB.class.php';
     $db = new DB();
 
+    if(isset($_POST['add'])) {
+        if(isset($_SESSION['user_id'])) {
+            header('Location: add.php');
+        }
+        else {
+            header('Location: login.php');
+        }
+    }
+
     if(isset($_POST['submit'])) {
         $data = [
             'file_name' => $_FILES['filename']['name'],
-            'title' => $_POST['title']
+            'title' => $_POST['title'],
+            'added_by' => $_SESSION['user_id']
         ];
 
         $file_name = $_FILES['filename']['name'];
@@ -31,7 +41,7 @@
                 die();
             }
 
-            $result = $db->insert('pictures', $data);
+            $result = $db->insert_data('pictures', $data);
 
             if($result) {
                 $_SESSION['success'] = 'Image Uploaded Successfully!';
@@ -80,7 +90,7 @@
             'file_name' => $updated_filename
         ];
 
-        $result = $db->update('pictures', $data);
+        $result = $db->update_data('pictures', $data);
 
         if($result) {
             $_SESSION['success'] = 'Image Updated Successfully!';
@@ -106,7 +116,7 @@
             'id' => $id
         ];
 
-        $result = $db->delete('pictures', $data);
+        $result = $db->delete_data('pictures', $data);
 
         if($result) {
             $_SESSION['success'] = 'Data Deleted Permanently!';
@@ -115,5 +125,65 @@
             $_SESSION['error'] = 'An Error occured while deleting your data! Please try again.';
         }
         header('Location: index.php');
+    }
+
+    
+    if(isset($_POST['register'])) {
+        
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $pass = $_POST['password'];
+        $cpass = $_POST['cpassword'];
+
+        if($pass !== $cpass) {
+            $_SESSION['error'] = "Passwords don't match!";
+            header('Location: register.php');
+            die();
+        }
+        
+        $data = [
+            'name' => $name,
+            'email' => $email,
+            'password' => md5($pass)
+        ];
+        
+        $select = $db->db->query("SELECT * FROM `users` WHERE email = '$email'") or die('query failed');
+        
+        if($select->num_rows > 0) {
+            $_SESSION['error'] = 'User already exists!';
+            header('Location: register.php');
+        }else{
+            $result = $db->add_user('users', $data);
+
+            if($result) {
+                $id = $db->db->query("SELECT id FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+                $_SESSION['user_id'] = $id;
+                $_SESSION['success'] = 'Registered successfully!';
+                header('Location: index.php');
+            }
+            else {
+                $_SESSION['error'] = 'An Error occured while registering user! Please try again.';
+                header('Location: register.php');
+            }
+        }
+        
+    }
+
+    if(isset($_POST['login'])) {
+
+        $email = $_POST['email'];
+        $pass = md5($_POST['password']);
+        
+        $select = $db->db->query("SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+        
+        if($select->num_rows > 0){
+            $row = $select->fetch_assoc();
+            $_SESSION['user_id'] = $row['id'];
+            $_SESSION['success'] = 'Howdy, ' . $row['name'];
+            header('Location: index.php');
+        }else{
+            $_SESSION['error'] = 'incorrect password or email!';
+            header('Location: login.php');
+        }
     }
 ?>

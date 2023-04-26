@@ -28,7 +28,7 @@ class DB{
      * @param string name of the table
      * @param array the data for inserting into the table
      */
-    public function insert($table, $data){
+    public function insert_data($table, $data){
         if(!empty($data) && is_array($data)){
             $columns = '';
             $values  = '';
@@ -59,7 +59,7 @@ class DB{
      * @param array the data for updating into the table
      * @param array where condition on updating data
      */
-    public function update($table, $data){
+    public function update_data($table, $data){
         if(!empty($data) && is_array($data)){
             $colvalSet = '';
             $i = 0;
@@ -84,7 +84,7 @@ class DB{
      * @param string name of the table
      * @param array where condition on deleting data
      */
-    public function delete($table, $conditions){
+    public function delete_data($table, $conditions){
         $whereSql = '';
         if(!empty($conditions)&& is_array($conditions)){
             $whereSql .= ' WHERE ';
@@ -99,4 +99,28 @@ class DB{
         $delete = $this->db->query($query);
         return $delete?true:false;
     }
+
+    /*
+     * Add user into the database
+     * @param string name of the table
+     * @param array the data for inserting into the table
+     */
+    public function add_user($table, $data) {
+        if(!empty($data) && is_array($data)){
+            $columns = '';
+            $values  = '';
+            $i = 0;
+            foreach($data as $key=>$val){
+                $pre = ($i > 0)?', ':'';
+                $columns .= $pre.$key;
+                $values  .= $pre."'".$this->db->real_escape_string($val)."'";
+                $i++;
+            }
+            $query = "INSERT INTO ".$table." (".$columns.") VALUES (".$values.")";
+            $insert = $this->db->query($query);
+            return $insert?$this->db->insert_id:false;
+        }else{
+            return false;
+        }
+    }   
 }
