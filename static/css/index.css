@@ -152,7 +152,7 @@ nav {
     cursor: pointer;
 }
 
-.delete-button {
+.form-button {
     outline: none;
     border: none;
     margin: 0 10px;
@@ -161,7 +161,7 @@ nav {
     background-color: rgba(255, 255, 255, 0.7);
 }
 
-.delete {
+.form-button-img {
     height: 22px;
     width: 22px;
     background-color: transparent;
@@ -188,5 +188,8 @@ nav {
     }
     .navbar-brand {
         letter-spacing: 0.3rem;
+    }
+    .button-with-image {
+        margin: 0 0.2rem;
     }
 }

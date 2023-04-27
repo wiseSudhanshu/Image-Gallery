@@ -141,6 +141,12 @@
             die();
         }
         
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $_SESSION['error'] = "Invalid email format";
+            header('Location: register.php');
+            die();
+        }
+
         $data = [
             'name' => $name,
             'email' => $email,

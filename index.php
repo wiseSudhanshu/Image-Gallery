@@ -88,13 +88,13 @@ if(isset($_GET['logout'])) {
                             
                             ?>
                                 <a href="edit.php?id=<?php echo $row['id']; ?>">
-                                    <img src="./static/images/pencil.png" alt="edit" class="sr-option edit">
+                                    <img src="./static/images/pencil.png" alt="edit" class="sr-option">
                                 </a>
                                 <form id="delete-form" action="postAction.php" method="POST">
                                     <input type="hidden" name="del_id" value="<?php echo $row['id']; ?>">
                                     <input type="hidden" name="del_image" value="<?php echo $row['file_name']; ?>">
-                                    <button type="submit" name="delete_image" class="delete-button" onclick="return confirm('Are you sure, you want to permanently delete it?');">
-                                        <img src="./static/images/trash.png" alt="delete" class="delete">
+                                    <button type="submit" name="delete_image" class="form-button" onclick="return confirm('Are you sure, you want to permanently delete it?');">
+                                        <img src="./static/images/trash.png" alt="delete" class="form-button-img">
                                     </button>
                                 </form>
                             <?php
@@ -102,6 +102,11 @@ if(isset($_GET['logout'])) {
                             }
                             
                             ?>
+
+                                <a href="view.php?id=<?php echo $row['id']; ?>" target="_blank">
+                                    <img src="./static/images/share.png" alt="edit" class="sr-option">
+                                </a>
+
                             </div>
                         </div>
                         <?php
