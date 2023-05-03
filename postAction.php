@@ -162,8 +162,10 @@
             $result = $db->add_user('users', $data);
 
             if($result) {
-                $id = $db->db->query("SELECT id FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
-                $_SESSION['user_id'] = $id;
+                $encryptedpass = md5($pass);
+                $select = $db->db->query("SELECT * FROM `users` WHERE email = '$email' AND password = '$encryptedpass'") or die('query failed');
+                $row = $select->fetch_assoc();
+                $_SESSION['user_id'] = $row['id'];
                 $_SESSION['success'] = 'Registered successfully!';
                 header('Location: index.php');
             }
