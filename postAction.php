@@ -15,12 +15,6 @@
     }
 
     if(isset($_POST['submit'])) {
-        $data = [
-            'file_name' => $_FILES['filename']['name'],
-            'title' => $_POST['title'],
-            'added_by' => $_SESSION['user_id']
-        ];
-
         $file_name = $_FILES['filename']['name'];
         $tmp_dir = $_FILES['filename']['tmp_name'];
 
@@ -29,29 +23,39 @@
 
         $file_ext_valid = ['png', 'jpg', 'jpeg'];
         
-        if(file_exists("uploads/" . $file_name)) {
-            $_SESSION['error'] = $file_name . " already exists!";
+        if(!in_array($file_type, $file_ext_valid)) {
+            $_SESSION['error'] = "file must be of type 'png', 'jpg' or 'jpeg' only";
             header('Location: add.php');
             die();
-        } 
-        else {
-            if(!in_array($file_type, $file_ext_valid)) {
-                $_SESSION['error'] = "file must be of type 'png', 'jpg' or 'jpeg' only";
-                header('Location: add.php');
-                die();
-            }
+        }
+        $file_name = $file_ext[0] . 'uid=' . $_SESSION['user_id'] . '.' . $file_type;
+        
+        $sql = "SELECT COUNT(*) FROM pictures WHERE file_name LIKE '$file_name%' AND added_by = {$_SESSION['user_id']}";
+        $result = $db->db->query($sql);
+        $count = mysqli_fetch_array($result)[0];
 
-            $result = $db->insert_data('pictures', $data);
 
-            if($result) {
-                $_SESSION['success'] = 'Image Uploaded Successfully!';
-                $target_file_path = 'uploads/' . $file_name;
-                move_uploaded_file($tmp_dir, $target_file_path);
-                header('Location: index.php');
-            } else {
-                $_SESSION['error'] = 'An Error occured while inserting your image! Please try again.';
-                header('Location: add.php');
-            }
+        if($count > 0) {
+            $parts = explode('.', $file_name);
+            $file_name = $parts[0].'('.$count.').'.$file_type;
+        }
+
+        $data = [
+            'file_name' => $file_name,
+            'title' => $_POST['title'],
+            'added_by' => $_SESSION['user_id']
+        ];
+
+        $result = $db->insert_data('pictures', $data);
+
+        if($result) {
+            $_SESSION['success'] = 'Image Uploaded Successfully!';
+            $target_file_path = 'uploads/' . $file_name;
+            move_uploaded_file($tmp_dir, $target_file_path);
+            header('Location: gallery.php');
+        } else {
+            $_SESSION['error'] = 'An Error occured while inserting your image! Please try again.';
+            header('Location: add.php');
         }
     }
 
@@ -99,32 +103,48 @@
                 move_uploaded_file($tmp_dir, $target_file_path);
                 unlink('uploads/'.$old_image);
             }
-            header('Location: index.php');
+            header('Location: gallery.php');
         } else {
             $_SESSION['error'] = 'An Error occured while updating your data! Please try again.';
             header('Location: edit.php?id='.$new_image_id);
         }
     }
 
-    if(isset($_POST['delete_image'])) {
-        $id = $_POST['del_id'];
-        $image = $_POST['del_image'];
+    // if(isset($_POST['delete_image'])) {
+    //     $id = $_POST['del_id'];
+    //     $image = $_POST['del_image'];
 
-        echo $id;
+    //     $data = [
+    //         'id' => $id
+    //     ];
+
+    //     $result = $db->delete_data('pictures', $data);
+
+    //     if($result) {
+    //         $_SESSION['success'] = 'Data Deleted Permanently!';
+    //         unlink('uploads/'.$image);
+    //     } else {
+    //         $_SESSION['error'] = 'An Error occured while deleting your data! Please try again.';
+    //     }
+    //     header('Location: gallery.php');
+    // }
+
+    if(isset($_POST['action'])) {
+        $id = $_POST['id'];
+
+        $select = $db->db->query("SELECT * FROM `pictures` WHERE id = '$id'") or die('query failed');
+        $row = $select->fetch_assoc();
+        $file_name = $row['file_name'];
 
         $data = [
             'id' => $id
         ];
 
-        $result = $db->delete_data('pictures', $data);
-
-        if($result) {
-            $_SESSION['success'] = 'Data Deleted Permanently!';
-            unlink('uploads/'.$image);
-        } else {
-            $_SESSION['error'] = 'An Error occured while deleting your data! Please try again.';
+        if($_POST['action'] == 'delete') {
+            $db->delete_data('pictures', $data);
+            unlink('uploads/'.$file_name);
         }
-        header('Location: index.php');
+        header('Location: gallery.php');
     }
 
     
@@ -167,7 +187,7 @@
                 $row = $select->fetch_assoc();
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['success'] = 'Registered successfully!';
-                header('Location: index.php');
+                header('Location: gallery.php');
             }
             else {
                 $_SESSION['error'] = 'An Error occured while registering user! Please try again.';
@@ -188,7 +208,7 @@
             $row = $select->fetch_assoc();
             $_SESSION['user_id'] = $row['id'];
             $_SESSION['success'] = 'Howdy, ' . $row['name'];
-            header('Location: index.php');
+            header('Location: gallery.php');
         }else{
             $_SESSION['error'] = 'incorrect password or email!';
             header('Location: login.php');
