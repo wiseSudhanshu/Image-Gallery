@@ -146,7 +146,6 @@
         }
         header('Location: gallery.php');
     }
-
     
     if(isset($_POST['register'])) {
         

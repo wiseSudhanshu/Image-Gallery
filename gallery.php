@@ -58,7 +58,7 @@ session_start();
             unset($_SESSION['success']);
         }
     ?>
-
+    <script src="./static/JS/gallery.js"></script>
     <div class="sr-container">
         <div class="sr-gallery">
             <?php
@@ -74,21 +74,25 @@ session_start();
                         ?>
                         <div class="sr-image-container">
                             <a href="<?php echo "uploads/".$row['file_name']; ?>" data-lightbox="models" data-title="<?php echo $row['title']; ?>">
-                                <img src="<?php echo "uploads/".$row['file_name']; ?>" width="100px" alt="image" class="sr-image" id="<?php echo $row['id']; ?>">
+                                <img src="./static/images/lazy.png" data-src="<?php echo "uploads/".$row['file_name']; ?>" width="100px" alt="image" class="sr-image" id="<?php echo $row['id']; ?>" loading="lazy">
                             </a>
-                            <div class="sr-options">
+                            <div id="sr-options">
                                 <a href="edit.php?id=<?php echo $row['id']; ?>">
                                     <img src="./static/images/pencil.png" alt="edit" class="sr-option">
                                 </a>
-                                <!-- <input type="hidden" name="del_id" value="<?php //echo $row['id']; ?>">
-                                <input type="hidden" name="del_image" value="<?php //echo $row['file_name']; ?>"> -->
-                                <button name="delete_image" class="form-button" onclick="deleteData(<?php echo $row['id']; ?>);">
+                                <button class="form-button" onclick="deleteData(<?php echo $row['id']; ?>);">
                                     <img src="./static/images/trash.png" alt="delete" class="form-button-img">
                                 </button>
 
-                                <a href="view.php?id=<?php echo $row['id']; ?>" target="_blank">
-                                    <img src="./static/images/share.png" alt="edit" class="sr-option">
-                                </a>
+                                <form action="view.php" method="POST" id="share-form">
+                                    <input type="hidden" name="share_id" value="<?php echo $row['id']; ?>">
+                                    <!-- <a href="view.php?id=<?php //echo $row['id']; ?>" target="_blank">
+                                        <img src="./static/images/share.png" alt="edit" class="sr-option">
+                                    </a> -->
+                                    <button name="share_image" class="form-button">
+                                        <img src="./static/images/share.png" alt="share" class="form-button-img">
+                                    </button>
+                                </form>
 
                             </div>
                         </div>

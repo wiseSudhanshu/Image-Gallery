@@ -30,6 +30,28 @@
             height: 100vh;
         }
 
+        /* .link-container {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+        } */
+
+        .back {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            font-size: 20px;
+            width: 5em;
+            padding: 7px 5px;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            outline: none;
+            color: #fff;
+            background-color: grey;
+            border-color: grey;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -38,11 +60,11 @@
         require_once 'DB.class.php';
         $db = new DB();
 
-        if(!isset($_GET['id'])) {
-            header('Location: index.php');
+        if(!isset($_POST['share_id'])) {
+            header('Location: gallery.php');
         }
 
-        $image_id = $_GET['id'];
+        $image_id = $_POST['share_id'];
 
         $sql = "SELECT * from `pictures` WHERE id = '$image_id'";
 
@@ -55,6 +77,7 @@
                 <div class="parent">
                     <img src="./uploads/<?php echo $row['file_name']; ?>" alt="Image">
                 </div>
+                <a href="gallery.php" class="back">Go back</a>
 
               <?php
             }

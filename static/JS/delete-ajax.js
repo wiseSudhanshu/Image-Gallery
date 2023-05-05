@@ -12,6 +12,7 @@ const deleteData = (id) => {
                 if(response) {
                     alert("Data Deleted Permanently");
                     document.getElementById(id).style.display = "none";
+                    document.getElementById('sr-options').style.display = "none";
                 }
                 else {
                     alert("Data could not be deleted!");
