@@ -89,9 +89,6 @@ session_start();
 
                                 <form action="view.php" method="POST" id="share-form">
                                     <input type="hidden" name="share_id" value="<?php echo $row['id']; ?>">
-                                    <!-- <a href="view.php?id=<?php //echo $row['id']; ?>" target="_blank">
-                                        <img src="./static/images/share.png" alt="edit" class="sr-option">
-                                    </a> -->
                                     <button name="share_image" class="form-button">
                                         <img src="./static/images/share.png" alt="share" class="form-button-img">
                                     </button>
