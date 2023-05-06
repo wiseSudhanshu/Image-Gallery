@@ -14,14 +14,15 @@
     <h1 class="heading">Edit Image</h1>
 
     <?php
+      require_once 'config.php';
       require_once 'DB.class.php';
       $db = new DB();
 
       $id = $_GET['id'];
 
-      $sql = "SELECT * FROM pictures WHERE id='$id'";
+      $cond = ['id' => $id];
 
-      $result = $db->db->query($sql);
+      $result = $db->select_data(IMAGE_TABLE, $cond) or die('query failed!');
 
       if($result->num_rows > 0) {
         foreach($result as $row) {

@@ -2,6 +2,7 @@
 
     session_start();
 
+    require_once 'config.php';
     require_once 'DB.class.php';
     $db = new DB();
 
@@ -30,8 +31,12 @@
         }
         $file_name = $file_ext[0] . 'uid=' . $_SESSION['user_id'] . '.' . $file_type;
         
-        $sql = "SELECT COUNT(*) FROM pictures WHERE file_name LIKE '$file_name%' AND added_by = {$_SESSION['user_id']}";
-        $result = $db->db->query($sql);
+        $cond = [
+            'count' => true,
+            'file_name' => 'LIKE ' . $file_name . '%',
+            'added_by' => $_SESSION['user_id']
+        ];
+        $result = $db->select_data(IMAGE_TABLE, $cond);
         $count = mysqli_fetch_array($result)[0];
 
 
@@ -46,7 +51,7 @@
             'added_by' => $_SESSION['user_id']
         ];
 
-        $result = $db->insert_data('pictures', $data);
+        $result = $db->insert_data(IMAGE_TABLE, $data);
 
         if($result) {
             $_SESSION['success'] = 'Image Uploaded Successfully!';
@@ -94,7 +99,7 @@
             'file_name' => $updated_filename
         ];
 
-        $result = $db->update_data('pictures', $data);
+        $result = $db->update_data(IMAGE_TABLE, $data);
 
         if($result) {
             $_SESSION['success'] = 'Image Updated Successfully!';
@@ -110,29 +115,11 @@
         }
     }
 
-    // if(isset($_POST['delete_image'])) {
-    //     $id = $_POST['del_id'];
-    //     $image = $_POST['del_image'];
-
-    //     $data = [
-    //         'id' => $id
-    //     ];
-
-    //     $result = $db->delete_data('pictures', $data);
-
-    //     if($result) {
-    //         $_SESSION['success'] = 'Data Deleted Permanently!';
-    //         unlink('uploads/'.$image);
-    //     } else {
-    //         $_SESSION['error'] = 'An Error occured while deleting your data! Please try again.';
-    //     }
-    //     header('Location: gallery.php');
-    // }
-
     if(isset($_POST['action'])) {
         $id = $_POST['id'];
 
-        $select = $db->db->query("SELECT * FROM `pictures` WHERE id = '$id'") or die('query failed');
+        $cond = ['id' => $id];
+        $select = $db->select_data(IMAGE_TABLE, $cond) or die('query failed');
         $row = $select->fetch_assoc();
         $file_name = $row['file_name'];
 
@@ -141,7 +128,7 @@
         ];
 
         if($_POST['action'] == 'delete') {
-            $db->delete_data('pictures', $data);
+            $db->delete_data(IMAGE_TABLE, $data);
             unlink('uploads/'.$file_name);
         }
         header('Location: gallery.php');
@@ -171,18 +158,24 @@
             'email' => $email,
             'password' => md5($pass)
         ];
+
+        $cond = ['email' => $email];
         
-        $select = $db->db->query("SELECT * FROM `users` WHERE email = '$email'") or die('query failed');
+        $select = $db->select_data(USERS_TABLE, $cond) or die('query failed');
         
         if($select->num_rows > 0) {
             $_SESSION['error'] = 'User already exists!';
             header('Location: register.php');
         }else{
-            $result = $db->add_user('users', $data);
+            $result = $db->add_user(USERS_TABLE, $data);
 
             if($result) {
                 $encryptedpass = md5($pass);
-                $select = $db->db->query("SELECT * FROM `users` WHERE email = '$email' AND password = '$encryptedpass'") or die('query failed');
+                $cond = [
+                    'email' => $email,
+                    'password' => $encryptedpass
+                ];
+                $select = $db->select_data(USERS_TABLE, $cond) or die('query failed');
                 $row = $select->fetch_assoc();
                 $_SESSION['user_id'] = $row['id'];
                 $_SESSION['success'] = 'Registered successfully!';
@@ -201,7 +194,11 @@
         $email = $_POST['email'];
         $pass = md5($_POST['password']);
         
-        $select = $db->db->query("SELECT * FROM `users` WHERE email = '$email' AND password = '$pass'") or die('query failed');
+        $cond = [
+            'email' => $email,
+            'password' => $pass
+        ];
+        $select = $db->select_data(USERS_TABLE, $cond) or die('query failed');
         
         if($select->num_rows > 0){
             $row = $select->fetch_assoc();

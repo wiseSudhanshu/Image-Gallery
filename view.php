@@ -30,12 +30,6 @@
             height: 100vh;
         }
 
-        /* .link-container {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-        } */
-
         .back {
             position: absolute;
             bottom: 0;
@@ -57,6 +51,7 @@
 <body>
     <?php
 
+        require_once 'config.php';
         require_once 'DB.class.php';
         $db = new DB();
 
@@ -66,9 +61,9 @@
 
         $image_id = $_POST['share_id'];
 
-        $sql = "SELECT * from `pictures` WHERE id = '$image_id'";
+        $cond = ['id' => $image_id];
 
-        $result = $db->db->query($sql) or die('query failed!');
+        $result = $db->select_data(IMAGE_TABLE, $cond) or die('query failed!');
 
         if($result->num_rows > 0) {
             foreach($result as $row) {

@@ -62,12 +62,15 @@ session_start();
     <div class="sr-container">
         <div class="sr-gallery">
             <?php
+                require_once 'config.php';
                 require_once 'DB.class.php';
                 $db = new DB();
                 
-                $sql = "SELECT * FROM pictures WHERE added_by={$_SESSION['user_id']}";
+                $cond = [
+                    'added_by' => $_SESSION['user_id']
+                ];
     
-                $result = $db->db->query($sql);
+                $result = $db->select_data(IMAGE_TABLE, $cond);
                 
                 if($result->num_rows > 0) {
                     foreach($result as $row) {

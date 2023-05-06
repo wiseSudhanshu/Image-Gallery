@@ -1,28 +1,68 @@
 <?php
+require_once('./config.php');
+error_reporting(E_ALL & ~E_WARNING);
+
 /*
  * DB Class
  * This class is used for database related (connect, insert, update, and delete) operations
  * @author    Sudhanshu Rai
  */
 class DB{
-    private $dbHost     = "localhost";
-    private $dbUsername = "root";
-    private $dbPassword = "";
-    private $dbName     = "gallery";
     public $db;
 
     public function __construct(){
         if(!isset($this->db)){
             // Connect to the database
-            $conn = new mysqli($this->dbHost, $this->dbUsername, $this->dbPassword, $this->dbName);
+            $conn = new mysqli(DB_HOST, DB_USER, DB_PASSWORD);
             if(!$conn){
                 die("Failed to connect with MySQL: " . $conn->connect_error);
             }else{
-                $this->db = $conn;
+                $result = $conn->query("SHOW DATABASES LIKE '".DB_NAME."'");
+                if($result->num_rows == 0) {
+                    if(isset($_SESSION['user_id'])) {
+                        unset($_SESSION['user_id']);
+                    }
+                    session_destroy();
+                    header('Location: index.php');
+                    $sql = "CREATE DATABASE " . DB_NAME;
+                    $create = $conn->query($sql);
+                    if($create) {
+                        $conn->query("USE " . DB_NAME);
+                        $this->db = $conn;
+                    } 
+                    else 
+                        die("Failed to create database!");
+                } else {
+                    $conn->query("USE " . DB_NAME);
+                    $this->db = $conn;
+                }
             }
         }
     }
     
+    public function create_image_table($table) {
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+                    id INT(4) AUTO_INCREMENT PRIMARY KEY,
+                    file_name VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+                    title VARCHAR(255) COLLATE utf8_unicode_ci NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    modified_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
+                    added_by VARCHAR(100) COLLATE utf8mb4_general_ci NOT NULL
+                );";
+        
+        $this->db->query($sql);
+    }
+
+    public function create_user_table($table) {
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+                    id INT(100) AUTO_INCREMENT PRIMARY KEY,
+                    name VARCHAR(100) COLLATE utf8mb4_general_ci NOT NULL,
+                    email VARCHAR(100) COLLATE utf8mb4_general_ci NOT NULL,
+                    password VARCHAR(100) COLLATE utf8mb4_general_ci NOT NULL
+                );";
+
+        $this->db->query($sql);
+    }
     /*
      * Insert data into the database
      * @param string name of the table
@@ -77,6 +117,32 @@ class DB{
         }else{
             return false;
         }
+    }
+
+    public function select_data($table, $conditions) {
+        if($table == IMAGE_TABLE)
+            $this->create_image_table($table);
+        else
+            $this->create_user_table($table);
+        $whereSql = '';
+        if(!empty($conditions)&& is_array($conditions)){
+            $whereSql .= ' WHERE ';
+            $i = 0;
+            foreach($conditions as $key => $value){
+                if($key == 'count') continue;
+                $pre = ($i > 0)?' AND ':'';
+                if(substr($value, 0, 4) == 'LIKE')
+                    $whereSql .= $pre.$key." LIKE '".substr($value, 5)."'";
+                else
+                    $whereSql .= $pre.$key." = '".$value."'";
+                $i++;
+            }
+        }
+        $query = "SELECT * FROM ".$table.$whereSql;
+        if(array_key_exists("count", $conditions))
+            $query = "SELECT COUNT(*) FROM ".$table.$whereSql;
+        $select = $this->db->query($query);
+        return $select;
     }
 
     /*
