@@ -63,6 +63,38 @@ class DB{
 
         $this->db->query($sql);
     }
+
+    public function create_share_table($table) {
+        $sql = "CREATE TABLE IF NOT EXISTS {$table} (
+                    id INT(100) AUTO_INCREMENT PRIMARY KEY,
+                    image_id INT(4) NOT NULL,
+                    shared INT(1) NOT NULL,
+                    url VARCHAR(100) COLLATE utf8mb4_general_ci NOT NULL
+                );";
+
+        $this->db->query($sql);
+    }
+
+    public function insert_shared_data($table, $data) {
+        $this->create_share_table($table);  
+
+        if(!empty($data) && is_array($data)){
+            $columns = '';
+            $values  = '';
+            $i = 0;
+            foreach($data as $key=>$val){
+                $pre = ($i > 0)?', ':'';
+                $columns .= $pre.$key;
+                $values  .= $pre."'".$this->db->real_escape_string($val)."'";
+                $i++;
+            }
+            $query = "INSERT INTO ".$table." (".$columns.") VALUES (".$values.")";
+            $insert = $this->db->query($query);
+            return $insert?$this->db->insert_id:false;
+        }else{
+            return false;
+        }
+    }
     /*
      * Insert data into the database
      * @param string name of the table
@@ -122,8 +154,10 @@ class DB{
     public function select_data($table, $conditions) {
         if($table == IMAGE_TABLE)
             $this->create_image_table($table);
-        else
+        elseif($table == USERS_TABLE)
             $this->create_user_table($table);
+        else
+            $this->create_share_table($table);
         $whereSql = '';
         if(!empty($conditions)&& is_array($conditions)){
             $whereSql .= ' WHERE ';

@@ -87,12 +87,16 @@ session_start();
                                     <img src="./static/images/trash.png" alt="delete" class="form-button-img">
                                 </button>
 
-                                <form action="view.php" method="POST" id="share-form" enctype="multipart/form-data">
-                                    <input type="hidden" name="share_id" value="<?php echo $row['id']; ?>">
-                                    <button name="share_image" class="form-button">
-                                        <img src="./static/images/share.png" alt="share" class="form-button-img">
-                                    </button>
-                                </form>
+                                <?php 
+                                    $data = $row['id'];
+                                    $key = SECRET_KEY;
+                                    $method = METHOD;
+                                    $encrypted = openssl_encrypt($data, $method, $key, OPENSSL_RAW_DATA);
+                                ?>
+
+                                <a href="view.php?id=<?php echo base64_encode($encrypted); ?>" target="_blank">
+                                    <img src="./static/images/share.png" alt="share" class="sr-option">
+                                </a>
 
                             </div>
                         </div>

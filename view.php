@@ -30,22 +30,29 @@
             height: 100vh;
         }
 
-        .back {
+        /* Style for the copy icon */
+        .copy {
             position: absolute;
-            bottom: 0;
-            right: 0;
+            bottom: 10px;
+            right: 10px;
             font-size: 20px;
-            width: 5em;
-            padding: 7px 5px;
             border-radius: 5px;
-            text-decoration: none;
             text-align: center;
+            background-color: #5784f5;
+            border-color: #5784f5;
             outline: none;
-            color: #fff;
-            background-color: grey;
-            border-color: grey;
             cursor: pointer;
+            z-index: 1;
         }
+
+        .copy img {
+            filter: invert(90%);
+            width: 1.7em;
+            height: 1.7em;
+            margin: 10px;
+            display: inline-block;
+        }
+
     </style>
 </head>
 <body>
@@ -55,11 +62,42 @@
         require_once 'DB.class.php';
         $db = new DB();
 
-        if(!isset($_POST['share_id'])) {
-            header('Location: gallery.php');
+        if(!isset($_SESSION['user_id'])) {
+            header('Location: login.php');
         }
 
-        $image_id = $_POST['share_id'];
+        $key = SECRET_KEY;
+        $method = METHOD;
+
+        $encrypted = base64_decode($_GET['id']);
+        $image_id = openssl_decrypt($encrypted, $method, $key, OPENSSL_RAW_DATA);
+
+        $cond = ['image_id' => $image_id];
+
+        $result = $db->select_data(SHARE_TABLE, $cond) or die('query failed!');
+
+        if($result->num_rows > 0) {
+            foreach($result as $row) {
+              if($row['shared'] != 1) {
+                ?>
+                <div class="alert alert-danger mt-5 alert-dismissible col-6 fade show" role="alert" style="margin: 0 auto;">
+                    Requested URL doesn't exist!
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                <?php
+                die();
+              }
+            }
+        }
+        else {
+            $cond = [
+                'image_id' => $image_id,
+                'shared' => 1,
+                'url' => 'localhost/Image-Gallery/view.php?' . $image_id
+            ];
+    
+            $db->insert_shared_data(SHARE_TABLE, $cond);
+        }
 
         $cond = ['id' => $image_id];
 
@@ -72,14 +110,16 @@
                 <div class="parent">
                     <img src="./uploads/<?php echo $row['file_name']; ?>" alt="Image">
                 </div>
-                <a href="gallery.php" class="back">Go back</a>
+                <a href="#" onclick="copyToClipboard('<?php echo htmlspecialchars($_SERVER['REQUEST_URI'], ENT_QUOTES); ?>');" class="copy">
+                    <img src="./static/images/copy.png" alt="copy">
+                </a>
 
               <?php
             }
         }
         else {
             ?>
-            <div class="alert alert-success mt-5 alert-dismissible col-6 fade show" role="alert" style="margin: 0 auto;">
+            <div class="alert alert-danger mt-5 alert-dismissible col-6 fade show" role="alert" style="margin: 0 auto;">
                 Requested URL doesn't exist!
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
@@ -87,5 +127,17 @@
         }
 
     ?>
+
+    <script>        
+        function copyToClipboard(text) {
+            let copyText = document.createElement("textarea");
+            copyText.value = window.location.protocol + "//" + window.location.host + text;
+            document.body.appendChild(copyText);
+            copyText.select();
+            document.execCommand("copy");
+            document.body.removeChild(copyText);
+            alert("URL copied to clipboard");
+        }
+    </script>
 </body>
 </html>
