@@ -27,7 +27,7 @@ session_start();
             <a class="navbar-brand" href="#">Galleria</a>
         </div>
         <div class="buttons">
-            <form action="postAction.php" method="POST">
+            <form action="postAction.php" method="POST" enctype="multipart/form-data">
                 <button type="submit" class="button-with-image" name="add">
                     <a href="add.php"><img src="./static/images/add.png" alt="Image"></a>
                     <span class="toolTipText">Add Image</span>
@@ -87,7 +87,7 @@ session_start();
                                     <img src="./static/images/trash.png" alt="delete" class="form-button-img">
                                 </button>
 
-                                <form action="view.php" method="POST" id="share-form">
+                                <form action="view.php" method="POST" id="share-form" enctype="multipart/form-data">
                                     <input type="hidden" name="share_id" value="<?php echo $row['id']; ?>">
                                     <button name="share_image" class="form-button">
                                         <img src="./static/images/share.png" alt="share" class="form-button-img">

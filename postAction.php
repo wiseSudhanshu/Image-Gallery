@@ -29,7 +29,7 @@
             header('Location: add.php');
             die();
         }
-        $file_name = $file_ext[0] . 'uid=' . $_SESSION['user_id'] . '.' . $file_type;
+        $file_name = $file_ext[0] . 'db=' . DB_NAME .'uid=' . $_SESSION['user_id'];
         
         $cond = [
             'count' => true,
@@ -41,9 +41,10 @@
 
 
         if($count > 0) {
-            $parts = explode('.', $file_name);
-            $file_name = $parts[0].'('.$count.').'.$file_type;
+            $file_name .= '('.$count.').'.$file_type;
         }
+        else 
+            $file_name .= '.'. $file_type;
 
         $data = [
             'file_name' => $file_name,
@@ -74,12 +75,6 @@
             $updated_filename = $new_image;
         }
 
-        if($updated_filename !== $old_image && file_exists("uploads/" . $updated_filename)) {
-            $_SESSION['error'] = $new_image . " already exists!";
-            header('Location: edit.php?id='.$new_image_id);
-            die();
-        } 
-
         $tmp_dir = $_FILES['filename']['tmp_name'];
 
         $file_ext = explode('.', $updated_filename);
@@ -93,6 +88,25 @@
             die();
         }
 
+        if($updated_filename !== $old_image) {
+
+            $updated_filename = $file_ext[0] . 'db=' . DB_NAME .'uid=' . $_SESSION['user_id'];
+            
+            $cond = [
+                'count' => true,
+                'file_name' => 'LIKE ' . $updated_filename . '%',
+                'added_by' => $_SESSION['user_id']
+            ];
+            $result = $db->select_data(IMAGE_TABLE, $cond);
+            $count = mysqli_fetch_array($result)[0];
+
+
+            if($count > 0) 
+                $updated_filename .= '('.$count.').'.$file_type;
+            else 
+                $updated_filename .= '.' . $file_type;
+        }
+
         $data = [
             'id' => $new_image_id,
             'title' => $_POST['title'],
@@ -104,7 +118,7 @@
         if($result) {
             $_SESSION['success'] = 'Image Updated Successfully!';
             if($new_image != '') {
-                $target_file_path = 'uploads/' . $new_image;
+                $target_file_path = 'uploads/' . $updated_filename;
                 move_uploaded_file($tmp_dir, $target_file_path);
                 unlink('uploads/'.$old_image);
             }

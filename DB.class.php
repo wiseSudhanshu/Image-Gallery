@@ -131,7 +131,7 @@ class DB{
             foreach($conditions as $key => $value){
                 if($key == 'count') continue;
                 $pre = ($i > 0)?' AND ':'';
-                if(substr($value, 0, 4) == 'LIKE')
+                if(substr($value, 0, 4) == 'LIKE') 
                     $whereSql .= $pre.$key." LIKE '".substr($value, 5)."'";
                 else
                     $whereSql .= $pre.$key." = '".$value."'";
