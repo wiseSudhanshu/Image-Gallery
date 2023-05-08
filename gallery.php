@@ -79,7 +79,7 @@ session_start();
                             <a href="<?php echo "uploads/".$row['file_name']; ?>" data-lightbox="models" data-title="<?php echo $row['title']; ?>">
                                 <img src="./static/images/lazy.png" data-src="<?php echo "uploads/".$row['file_name']; ?>" width="100px" alt="image" class="sr-image" id="<?php echo $row['id']; ?>" loading="lazy">
                             </a>
-                            <div id="sr-options">
+                            <div class="sr-options" id="options-<?php echo $row['id']; ?>">
                                 <a href="edit.php?id=<?php echo $row['id']; ?>">
                                     <img src="./static/images/pencil.png" alt="edit" class="sr-option">
                                 </a>

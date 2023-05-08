@@ -124,7 +124,7 @@ nav {
     display: inline-block;
 }
   
-#sr-options {
+.sr-options {
     display: none;
     position: absolute;
     top: 1rem;
@@ -135,7 +135,7 @@ nav {
     z-index: 1;
 }
   
-.sr-image-container:hover #sr-options {
+.sr-image-container:hover .sr-options {
     display: flex;
 }
 
